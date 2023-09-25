@@ -123,11 +123,12 @@ class Graph():
 			unvisited.append(n)
 
 		#add start node to queue
+		start = self.getNodeFromPoint(start)
 		toVisit.append(start)
 
 		while toVisit:
 
-			#remove current node from queue, add to visited
+			#remove current node from toVisit, add to visited
 			curr_node = toVisit.pop(0)
 			visited.append(curr_node)
 
@@ -135,7 +136,7 @@ class Graph():
 			for neighbor in curr_node.neighbors:
 
 				#if next node is unvisited
-				if neighbor not in visited:
+				if neighbor in unvisited:
 
 					#add nextnode to toVisit, remove nextnode from unvisited
 					toVisit.append(neighbor)
@@ -145,6 +146,7 @@ class Graph():
 					neighbor.backNode = curr_node
 
 					#if next node is goal node
+					end = self.getNodeFromPoint(end)
 					if neighbor == end:
 					
 						# terminate with success
