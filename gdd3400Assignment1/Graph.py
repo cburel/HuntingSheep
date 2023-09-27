@@ -113,6 +113,7 @@ class Graph():
 		self.reset()
 
 		# TODO: Implement Breadth-first Search
+
 		#set up lists
 		unvisited = []
 		toVisit = []
@@ -121,7 +122,7 @@ class Graph():
 		#add all nodes to unvisited
 		for n in self.nodes:
 			unvisited.append(n)
-
+			
 		#add start node to queue
 		start = self.getNodeFromPoint(start)
 		toVisit.append(start)
@@ -129,13 +130,13 @@ class Graph():
 		while toVisit:
 
 			#remove current node from toVisit, add to visited
-			curr_node = toVisit.pop(0)
-			visited.append(curr_node)
+			curr = toVisit.pop(0)
+			visited.append(curr)
 
 			#for each nextnode connected to current node
-			for neighbor in curr_node.neighbors:
+			for neighbor in curr.neighbors:
 
-				#if next node is unvisited
+				#if next node is unvisited / code below is not executing
 				if neighbor in unvisited:
 
 					#add nextnode to toVisit, remove nextnode from unvisited
@@ -143,7 +144,7 @@ class Graph():
 					unvisited.remove(neighbor)
 
 					# set next node's back to currentnode
-					neighbor.backNode = curr_node
+					neighbor.backNode = curr
 
 					#if next node is goal node
 					end = self.getNodeFromPoint(end)
