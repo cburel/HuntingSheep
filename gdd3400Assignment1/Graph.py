@@ -120,12 +120,13 @@ class Graph():
 		visited = []
 
 		#add all nodes to unvisited
-		for n in self.nodes:
-			unvisited.append(n)
+		for row in self.nodes:
+			for node in row:
+				unvisited.append(node)
 			
 		#add start node to queue
-		start = self.getNodeFromPoint(start)
-		toVisit.append(start)
+		startNode = self.getNodeFromPoint(start)
+		toVisit.append(startNode)
 
 		while toVisit:
 
@@ -136,7 +137,7 @@ class Graph():
 			#for each nextnode connected to current node
 			for neighbor in curr.neighbors:
 
-				#if next node is unvisited / code below is not executing
+				#if next node is unvisited
 				if neighbor in unvisited:
 
 					#add nextnode to toVisit, remove nextnode from unvisited
@@ -147,11 +148,20 @@ class Graph():
 					neighbor.backNode = curr
 
 					#if next node is goal node
-					end = self.getNodeFromPoint(end)
-					if neighbor == end:
+					endNode = self.getNodeFromPoint(end)
+					if neighbor == endNode:
 					
 						# terminate with success
-						return visited
+						#for v in visited:
+						#	v.isPath = True
+						path = []
+						path.append(neighbor)
+						prev = neighbor.backNode
+						while prev is not 0:
+							path.append(prev)
+							if prev == startNode:
+								return path
+							prev = prev.backNode
 
 		# Return empty path indicating no path was found
 		return []
