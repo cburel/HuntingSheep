@@ -182,7 +182,7 @@ class Graph():
 
 		#mark start node visited
 		startNode = self.getNodeFromPoint(start)
-		startNode.cost = 0
+		startNode.costToEnd = 0
 
 		#add start node to pQueue
 		priorityQueue.append(startNode)
@@ -206,7 +206,7 @@ class Graph():
 			for neighbor in curr.neighbors:
 
 				#currDistance = Distance(currentNode, nextNode)
-				currDist = curr.cost + neighbor.cost
+				currDist = curr.costFromStart + neighbor.costToEnd
 
 				#if next node is not visited
 				if neighbor in unvisited:
@@ -214,13 +214,17 @@ class Graph():
 					#mark next node visited
 					unvisited.remove(neighbor)
 					visited.append(neighbor)
+					neighbor.isVisited = True
+					neighbor.isExplored = False
 
 					#next node distance = currDistance + currentNode.dist
-					neighbor.cost = currDist + curr.cost
+					neighbor.cost = currDist + curr.costFromStart
 
 					# add next node to pQueue
 					priorityQueue.append(neighbor)
-					priorityQueue.sort()
+
+					#sort queue by cost
+					priorityQueue.sort(key=lambda x: x.cost, reverse=True)
 
 				#else node has been visited, update dist if shorter
 					#if currDistance + currentNode.dist < nextNode.dist
