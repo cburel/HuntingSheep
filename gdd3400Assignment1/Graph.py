@@ -1,3 +1,4 @@
+from queue import PriorityQueue
 import Constants
 import Node
 import pygame
@@ -168,6 +169,68 @@ class Graph():
 		self.reset()
 
 		# TODO: Implement Djikstra's Search
+
+		#set up lists
+		unvisited = []
+		priorityQueue = []
+		visited = []
+
+		#mark all nodes unvisited
+		for row in self.nodes:
+			for node in row:
+				unvisited.append(node)
+
+		#mark start node visited
+		startNode = self.getNodeFromPoint(start)
+		startNode.cost = 0
+
+		#add start node to pQueue
+		priorityQueue.append(startNode)
+		unvisited.remove(startNode)
+
+		#while queue is not empty
+		while priorityQueue:
+
+			#remove curr node from queue
+			curr = priorityQueue.pop(0)
+			visited.append(curr)
+			curr.isVisited = False
+			curr.isExplored = True
+
+			#if curr node is goal, terminate with success
+			endNode = self.getNodeFromPoint(end)
+			if curr == endNode:
+				return self.buildPath(endNode)
+
+		# for each next node connected to curr
+			for neighbor in curr.neighbors:
+
+				#currDistance = Distance(currentNode, nextNode)
+				currDist = curr.cost + neighbor.cost
+
+				#if next node is not visited
+				if neighbor in unvisited:
+
+					#mark next node visited
+					unvisited.remove(neighbor)
+					visited.append(neighbor)
+
+					#next node distance = currDistance + currentNode.dist
+					neighbor.cost = currDist + curr.cost
+
+					# add next node to pQueue
+					priorityQueue.append(neighbor)
+					priorityQueue.sort()
+
+				#else node has been visited, update dist if shorter
+					#if currDistance + currentNode.dist < nextNode.dist
+					if currDist + curr.cost < neighbor.cost:
+
+						#nextNode.dist = currDistance + currentNode.dist
+						neighbor.cost = currDist + curr.cost
+
+						#nextNode.parent = curr
+						neighbor.backNode = curr
 		
 		# Return empty path indicating no path was found
 		return []
