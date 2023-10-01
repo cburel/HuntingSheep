@@ -258,8 +258,8 @@ class Graph():
 		# Return empty path indicating no path was found
 		return []
 
-	def heuristic(self, startNode, endNode):
-		return abs(startNode.center.x - endNode.center.x) + abs(startNode.center.y - endNode.center.y)
+	def distance(self, curr, neighbor):
+		return math.sqrt((curr.center.x - neighbor.center.x) ** 2 + (curr.center.y - neighbor.center.y) ** 2)
 
 	def findPath_BestFirst(self, start, end):
 		""" Best First Search """
@@ -319,8 +319,7 @@ class Graph():
 
 					#next node distance = currDistance + currentNode.dist
 					neighbor.costFromStart = currDist + curr.costFromStart
-					#neighbor.cost = neighbor.costFromStart + neighbor.costToEnd
-					neighbor.cost = self.heuristic(startNode, endNode)
+					neighbor.cost = neighbor.costFromStart + neighbor.costToEnd
 					neighbor.backNode = curr
 
 					# add next node to pQueue
