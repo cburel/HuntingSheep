@@ -178,6 +178,9 @@ class Graph():
 		#mark all nodes unvisited
 		for row in self.nodes:
 			for node in row:
+				node.costToEnd = 0
+				node.costFromStart = 0
+				node.cost = 0
 				unvisited.append(node)
 
 		#mark start node visited
@@ -206,7 +209,7 @@ class Graph():
 			for neighbor in curr.neighbors:
 
 				#currDistance = Distance(currentNode, nextNode)
-				currDist = curr.costFromStart + neighbor.costToEnd
+				currDist = math.sqrt((curr.center.x - neighbor.center.x) ** 2 + (curr.center.y - neighbor.center.y) ** 2)
 
 				#if next node is not visited
 				if neighbor in unvisited:
@@ -218,23 +221,29 @@ class Graph():
 					neighbor.isExplored = False
 
 					#next node distance = currDistance + currentNode.dist
-					neighbor.cost = currDist + curr.costFromStart
+					neighbor.costFromStart = currDist + curr.costFromStart
+					neighbor.cost = neighbor.costFromStart + neighbor.costToEnd
+					neighbor.backNode = curr
 
 					# add next node to pQueue
 					priorityQueue.append(neighbor)
-
-					#sort queue by cost
-					priorityQueue.sort(key=lambda x: x.cost, reverse=True)
-
+					
 				#else node has been visited, update dist if shorter
+				else:
 					#if currDistance + currentNode.dist < nextNode.dist
 					if currDist + curr.cost < neighbor.cost:
 
 						#nextNode.dist = currDistance + currentNode.dist
-						neighbor.cost = currDist + curr.cost
+						neighbor.costFromStart = currDist + curr.costFromStart
+						neighbor.cost = neighbor.costFromStart + neighbor.costToEnd
 
 						#nextNode.parent = curr
 						neighbor.backNode = curr
+				
+				#sort queue by cost
+				priorityQueue.sort(key=lambda x: x.cost, reverse=False)
+
+
 		
 		# Return empty path indicating no path was found
 		return []
