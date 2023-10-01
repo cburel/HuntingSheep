@@ -258,12 +258,88 @@ class Graph():
 		# Return empty path indicating no path was found
 		return []
 
+	def heuristic(self, startNode, endNode):
+		return abs(startNode.center.x - endNode.center.x) + abs(startNode.center.y - endNode.center.y)
+
 	def findPath_BestFirst(self, start, end):
 		""" Best First Search """
 		print("BEST_FIRST")
 		self.reset()
 
 		# TODO: Implement Best First Search
+		#set up lists
+		unvisited = []
+		priorityQueue = []
+		visited = []
+
+		#mark all nodes unvisited
+		for row in self.nodes:
+			for node in row:
+				node.costToEnd = 0
+				node.costFromStart = 0
+				node.cost = 0
+				unvisited.append(node)
+
+		#mark start node visited
+		startNode = self.getNodeFromPoint(start)
+		startNode.costToEnd = 0
+
+		#add start node to pQueue
+		priorityQueue.append(startNode)
+		unvisited.remove(startNode)
+
+		#while queue is not empty
+		while priorityQueue:
+
+			#remove curr node from queue
+			curr = priorityQueue.pop(0)
+			visited.append(curr)
+			curr.isVisited = False
+			curr.isExplored = True
+
+			#if curr node is goal, terminate with success
+			endNode = self.getNodeFromPoint(end)
+			if curr == endNode:
+				return self.buildPath(endNode)
+
+		# for each next node connected to curr
+			for neighbor in curr.neighbors:
+
+				#currDistance = Distance(currentNode, nextNode)
+				currDist = math.sqrt((curr.center.x - neighbor.center.x) ** 2 + (curr.center.y - neighbor.center.y) ** 2)
+
+				#if next node is not visited
+				if neighbor in unvisited:
+
+					#mark next node visited
+					unvisited.remove(neighbor)
+					visited.append(neighbor)
+					neighbor.isVisited = True
+					neighbor.isExplored = False
+
+					#next node distance = currDistance + currentNode.dist
+					neighbor.costFromStart = currDist + curr.costFromStart
+					#neighbor.cost = neighbor.costFromStart + neighbor.costToEnd
+					neighbor.cost = self.heuristic(startNode, endNode)
+					neighbor.backNode = curr
+
+					# add next node to pQueue
+					priorityQueue.append(neighbor)
+					
+				#else node has been visited, update dist if shorter
+				else:
+					#if currDistance + currentNode.dist < nextNode.dist
+					if currDist + curr.cost < neighbor.cost:
+
+						#nextNode.dist = currDistance + currentNode.dist
+						neighbor.costFromStart = currDist + curr.costFromStart
+						neighbor.cost = neighbor.costFromStart + neighbor.costToEnd
+
+						#nextNode.parent = curr
+						neighbor.backNode = curr
+				
+				#sort queue by cost
+				priorityQueue.sort(key=lambda x: x.cost, reverse=False)
 		
 		# Return empty path indicating no path was found
 		return []
